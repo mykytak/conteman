@@ -27,30 +27,14 @@ PROJ_DIR=/home/xedar/devel/$NAME
     cp $SCRIPT_DIR/template/laravel-vagrantfile-1 $PROJ_DIR/Vagrantfile
     sed -i "s/HOSTNAME/$NAME.dev/" $PROJ_DIR/Vagrantfile
 
-    # - go to /vagrant and install all composer requirements
-    touch bootstrap.sh
-
-    cat <<EOF > bootstrap.sh
-#!/bin/bash
-
-cd /vagrant
-composer create-project laravel/laravel repo
-mv repo/* ./
-mv repo/.[!.]* ./
-rmdir repo
-composer require --dev laravel/homestead
-rm Vagrantfile
-php vendor/bin/homestead make
-php artisan key:generate
-EOF
-
-    # - install laravel and homestead
-    vagrant up
-    vagrant halt
+    # - install laravel and homestead, script in vagrant file
+    vagrant provision
 
     rm bootstrap.sh
 
+    # add landrush to Vagrant config
     sed "s/http:\/\/localhost/$NAME.dev" .env
+    # REALLY, ADD LANDRUS TO VAGRANT!!!
 
     # - change vagrant file to homestead
     # rm Vagrantfile
