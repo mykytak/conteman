@@ -1,31 +1,40 @@
 import os, sys
 
+# https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
+# https://docs.python.org/3/library/argparse.html#sub-commands
+# https://habrahabr.ru/post/301532/
+
 from subprocess import getoutput, call, check_output, CalledProcessError
 
-from .base import *
+# from .base import *
 
-class GitModule(BaseModule):
+def _call(projpath, command = None):
+    if command is None:
+        return lambda x: _call(projpath, x)
 
-    # stype - storage type
-    # types: github, bitbucket. @maybe: raw, gitlab
-    # proj: obj of Project type
-    def __init__(self, stype, proj):
-        self.type = stype
-        self.proj = proj
+    call("cd {}; {}".format(projpath, command), shell=True)
 
-    def enable(self):
-        folder = os.path.realpath( self.proj.base_dir + '/' + self.proj.name )
+def create(state):
+    projname = state.projname
 
-        try:
-            # @todo: check if repo already exist
-
-            output = getoutput("git init {}".format(folder))
-            call("cd {}; git config user.name {}".format(folder, self.proj.username), shell=True)
-            call("cd {}; git config user.email {}".format(folder, self.proj.email), shell=True)
-            print( output )
-
-        except CalledProcessError as exc:
-            print( exc.output )
+    conf = {
+        'base_dir': '/home/xedar/devel'
+      , 'username': 'Mykytak'
+      , 'email': 'mykytak.ua@gmail.com'
+    }
 
 
-    # def disable(self):
+    folder = os.path.realpath( conf['base_dir'] + '/' + projname )
+
+    callFunc = _call(folder)
+
+    try:
+        output = getoutput("git init {}".format(folder))
+        callFunc("git config user.name {}".format(conf['username']))
+        callFunc("git config user.email {}".format(conf['email']))
+        print( output )
+    except CalledProcessError as e:
+        print( e.output )
+
+
+    print('git create with state: {}'.format(state))
