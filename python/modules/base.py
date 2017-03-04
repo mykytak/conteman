@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, yaml
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.ModuleFactory import ModuleFactory as factory
@@ -9,7 +9,7 @@ class BaseModule():
         pass
 
     @classmethod
-    def create(cls, state):
+    def create(cls, state, configs):
         path = state.base_dir + '/' + state.projname
         mode = 0o775
 
@@ -21,6 +21,9 @@ class BaseModule():
             os.makedirs(path + f, mode)
 
         open(path + '/.propen', 'a').close()
+        with open(path + '/climp.yml', 'w') as outfile:
+            yaml.dump(configs, outfile, default_flow_style=False)        
+
 
         # project configuration stored here.
         # something similar to node/bower configuration. Take options for modules, their configs etc.
