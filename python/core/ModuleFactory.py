@@ -8,9 +8,11 @@ class ModuleFactory():
 
         for m in modules:
             try:
-                package = imp.load_source(m, state.clipm_dir + '/modules/' + m + '.py')
+                package = imp.load_source(m, state.climp_dir + '/modules/' + m + '.py')
                 cls = getattr(package, m.title())
                 if action in dir(cls):
+                    # shell = InteractiveShell.get(state, cls.properties())
+                    # if shell, merge with state.m
                     act = getattr(cls, action)
                     act(state)
             except (ImportError, FileNotFoundError) as e:

@@ -16,7 +16,7 @@ class BaseModule():
         # if os.path.exists(projpath):
         #     raise Exception("project already exist. Use 'add' or 'open'.")
 
-        for f in ['/', '/src', '/db', '/doc', '/' + state.conf_dir]:
+        for f in ['/', '/src', '/db', '/doc', '/' + state.conf_dir, '/tests']:
             if os.path.exists(path + f): continue
             os.makedirs(path + f, mode)
 

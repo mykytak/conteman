@@ -1,5 +1,4 @@
-import os
-import imp
+import os, imp
 
 class Config():
     
@@ -16,7 +15,7 @@ class Config():
 
         configData = {}
 
-        configFile = cls.container.get('abspath')+'/.env'
+        configFile = cls.container.get('abspath') + '/.env'
         configData = cls.getDataFromFile(configFile)
 
         if not configData:
