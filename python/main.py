@@ -80,8 +80,17 @@ modules.set_defaults(cls='Some random text here')
 root.set_default_subparser('proj')
 args = root.parse_args()
 
+
 action = getattr(args.cls, args.action)
 state = State(args)
+
+projname = args.split('/')
+if len(projname) > 1:
+    for d in projname[:-1]:
+        state.base_dir += '/' + d
+
+    state.projname = projname[-1]
+
 action(state)
 
 exit()
