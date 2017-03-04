@@ -1,25 +1,23 @@
-import os
+from subprocess import call
 
-def create(args):
-    name = args.projname
+class Sublime():
+    @staticmethod
+    def create(state):
+        name = state.projname
 
-    conf = {
-        'base_dir': '/home/xedar/devel'
-    }
+        mode = 0o775
 
-    path = os.path.realpath( conf['base_dir'] + '/' + name )
-
-    mode = 0o775
-
-    with open(path + '/.climp/{}.sublime-project'.format(name), 'w') as f:
-        print('{{"folders":[{{"path": "{}"}}]}}'.format(path), file=f)
+        with open(state.path + '/' + state.conf_dir + '/{}.sublime-project'.format(name), 'w') as f:
+            print('{{"folders":[{{"path": "{}"}}]}}'.format(state.path), file=f)
 
 
-    # if os.path.exists(projpath):
-    #     raise Exception("project already exist. Use 'add' or 'open'.")
+        # if os.path.exists(projpath):
+        #     raise Exception("project already exist. Use 'add' or 'open'.")
 
-    # for f in ['/', '/src', '/db', '/doc']:
-    #     os.makedirs(projpath + f, mode)
+        # for f in ['/', '/src', '/db', '/doc']:
+        #     os.makedirs(projpath + f, mode)
 
-def open(args): pass
-    # subl --project .climp/test_new.sublime-project
+    @staticmethod
+    def open(state):
+        cmd = 'subl --project {}/{}.sublime-project'.format(state.conf_dir, state.projname)
+        call(cmd, shell=True)

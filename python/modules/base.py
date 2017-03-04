@@ -4,21 +4,19 @@ sys.path.insert(0, os.path.abspath('../core'))
 from core.ModuleFactory import ModuleFactory as factory
 
 class BaseModule():
-    base_dir = '/home/xedar/devel'
-
     # action for configure project before start
     def prepare(self):
         pass
 
     @classmethod
     def create(cls, state):
-        path = cls.base_dir + '/' + state.projname
+        path = state.base_dir + '/' + state.projname
         mode = 0o775
 
         # if os.path.exists(projpath):
         #     raise Exception("project already exist. Use 'add' or 'open'.")
 
-        for f in ['/', '/src', '/db', '/doc', '/.climp']:
+        for f in ['/', '/src', '/db', '/doc', state.conf_dir]:
             if os.path.exists(path + f): continue
             os.makedirs(path + f, mode)
 
@@ -34,7 +32,7 @@ class BaseModule():
         # broadcast action to modules
         factory.broadcast('create', state.modules, state)
 
-        # add record to db (?)
+        # add record to db
 
 
     def add(self): pass
@@ -42,6 +40,7 @@ class BaseModule():
     @classmethod
     def open(cls, name):
         pass
+        # factory.broadcast('open', )
         # run .projopen
 
     def archive(self):

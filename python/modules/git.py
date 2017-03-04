@@ -6,35 +6,37 @@ import os, sys
 
 from subprocess import getoutput, call, check_output, CalledProcessError
 
-# from .base import *
+class Git():
+    @classmethod
+    def _call(cls, projpath, command = None):
+        if command is None:
+            return lambda x: cls._call(projpath, x)
 
-def _call(projpath, command = None):
-    if command is None:
-        return lambda x: _call(projpath, x)
+        call("cd {}; {}".format(projpath, command), shell=True)
 
-    call("cd {}; {}".format(projpath, command), shell=True)
+    @classmethod
+    def create(cls, state):
+        projname = state.projname
 
-def create(state):
-    projname = state.projname
+        conf = {
+            'username': 'Mykytak'
+          , 'email': 'mykytak.ua@gmail.com'
+        }
 
-    conf = {
-        'base_dir': '/home/xedar/devel'
-      , 'username': 'Mykytak'
-      , 'email': 'mykytak.ua@gmail.com'
-    }
+        callFunc = cls._call(state.path)
 
+        try:
+            output = getoutput("git init {}".format(state.path))
+            callFunc("git config user.name {}".format(conf['username']))
+            callFunc("git config user.email {}".format(conf['email']))
+            with open("{}".format(state.path + '/.gitignore'), 'w') as f:
+                print( state.conf_dir, file=f )
 
-    folder = os.path.realpath( conf['base_dir'] + '/' + projname )
+            callFunc("git add .; git commit -m 'initial'")
 
-    callFunc = _call(folder)
-
-    try:
-        output = getoutput("git init {}".format(folder))
-        callFunc("git config user.name {}".format(conf['username']))
-        callFunc("git config user.email {}".format(conf['email']))
-        print( output )
-    except CalledProcessError as e:
-        print( e.output )
+            print( output )
+        except CalledProcessError as e:
+            print( e.output )
 
 
-    print('git create with state: {}'.format(state))
+        print('git create with state: {}'.format(state))
