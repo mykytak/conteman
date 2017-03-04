@@ -9,7 +9,7 @@ class BaseModule():
         pass
 
     @classmethod
-    def create(cls, state, configs):
+    def create(cls, state):
         path = state.base_dir + '/' + state.projname
         mode = 0o775
 
@@ -20,9 +20,9 @@ class BaseModule():
             if os.path.exists(path + f): continue
             os.makedirs(path + f, mode)
 
-        open(path + '/.propen', 'a').close()
-        with open(path + '/climp.yml', 'w') as outfile:
-            yaml.dump(configs, outfile, default_flow_style=False)        
+        # open(path + '/.propen', 'a').close()
+        # with open(path + '/climp.yml', 'w') as outfile:
+        #     yaml.dump(configs, outfile, default_flow_style=False)        
 
 
         # project configuration stored here.

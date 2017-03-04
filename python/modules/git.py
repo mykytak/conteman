@@ -14,8 +14,8 @@ class Git():
 
         call("cd {}; {}".format(projpath, command), shell=True)
 
-    @classmethod
-    def properties(cls):
+    @staticmethod
+    def properties():
         return {
             "required": {
                 "username": "Your git username",
