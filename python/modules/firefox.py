@@ -16,5 +16,5 @@ class Firefox():
 
     def open(state):
         name = state.projname
-        cmd = 'firefox -P "{}" -no-remote'.format(name)
+        cmd = 'firefox -P "{}" -no-remote &'.format(name)
         call(cmd, shell=True)

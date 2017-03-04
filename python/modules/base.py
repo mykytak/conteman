@@ -41,9 +41,8 @@ class BaseModule():
     def add(self): pass
 
     @classmethod
-    def open(cls, name):
-        pass
-        # factory.broadcast('open', )
+    def open(cls, state):
+        factory.broadcast('open', state.modules, state)
         # run .projopen
 
     def archive(self):

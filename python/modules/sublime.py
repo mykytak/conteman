@@ -1,6 +1,8 @@
 from subprocess import call
 
 class Sublime():
+
+
     @staticmethod
     def create(state):
         name = state.projname
@@ -17,7 +19,18 @@ class Sublime():
         # for f in ['/', '/src', '/db', '/doc']:
         #     os.makedirs(projpath + f, mode)
 
+
+    @staticmethod
+    def properties():
+        return {
+            "required": {
+                "shortcut": "Your sublime shortcut"
+            }
+        }
+
+
     @staticmethod
     def open(state):
-        cmd = 'subl --project {}/{}.sublime-project'.format(state.conf_dir, state.projname)
+        cmd = '{state.sublime[shortcut]} --project {state.path}/{state.conf_dir}/{state.projname}.sublime-project'.format(state=state)
+        print(cmd)
         call(cmd, shell=True)

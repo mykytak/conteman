@@ -14,7 +14,7 @@ class ModuleFactory():
                 cls = getattr(package, m.title())
                 if action in dir(cls):
 
-                    if 'properties' in cls.__dict__:
+                    if action == 'create' and 'properties' in cls.__dict__:
                         shell = InteractiveShell.get(cls.properties(), m)
                     
                     # return
@@ -24,4 +24,5 @@ class ModuleFactory():
             except (ImportError, FileNotFoundError) as e:
                 print("Module {} not found. {}".format(m, e))
 
-        InteractiveShell.write(state.base_dir + '/' + state.projname)
+        if action == 'create':
+            InteractiveShell.write(state.base_dir + '/' + state.projname)
