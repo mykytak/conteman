@@ -15,6 +15,15 @@ class Git():
         call("cd {}; {}".format(projpath, command), shell=True)
 
     @classmethod
+    def properties(cls):
+        return {
+            "required": {
+                "username": "Your git username",
+                "email": "Your git email"
+            }
+        }
+
+    @classmethod
     def create(cls, state):
         projname = state.projname
 
@@ -30,7 +39,8 @@ class Git():
             callFunc("git config user.name {}".format(conf['username']))
             callFunc("git config user.email {}".format(conf['email']))
             with open("{}".format(state.path + '/.gitignore'), 'w') as f:
-                print( state.conf_dir, file=f )
+                ignore = state.conf_dir + '\ndoc'
+                print( ignore, file=f )
 
             callFunc("git add .; git commit -m 'initial'")
 
