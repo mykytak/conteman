@@ -18,7 +18,7 @@ class State():
 
         if os.path.isfile(args.path + '/climp.yml'):
             with open(args.path + '/climp.yml', 'r') as f:
-                self.projconf = yaml.load()
+                self.projconf = yaml.load(f)
 
         self.args = args
 

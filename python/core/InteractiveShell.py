@@ -32,3 +32,45 @@ class InteractiveShell():
 
 
         return
+
+
+    @classmethod
+    def update_user_config(cls, path, module, key, value):
+        with open('test.yml', 'r') as f:
+            test = yaml.load(f)
+            test['host'] = 'huyuber.com'
+
+            with open('test.yml', 'r+') as f:
+                line = f.readline()
+                offset = 0
+
+                inputStr = 'host: api.huyuber.com'
+
+                # for i, line in enumerate(f):
+                while line:
+                    if line.strip() == 'host: api.uber.com':
+                        temp = f.tell()
+
+                        f.seek( offset )
+
+                        _f = open('test.yml', 'rb+')
+
+                        _f.seek( temp - 1 )
+                        tail = _f.read()
+                        
+                        f.write(inputStr)
+
+                        f.truncate( f.tell() )
+
+                        _f.seek( f.tell() )
+                        _f.write(tail)
+
+                        _f.close()
+                            
+
+                    offset = f.tell()
+                    line = f.readline()
+                    # else:
+                    #     f.write(line)
+
+            f.close()
