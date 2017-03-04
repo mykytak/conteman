@@ -1,4 +1,7 @@
-import os
+import os, sys
+
+sys.path.insert(0, os.path.abspath('../core'))
+from core.Config import Config
 
 class State():
     internals = {}
@@ -7,12 +10,12 @@ class State():
 
         # @todo: parse ~/.clipmrc
         # @todo: parse projdir/.climprc
-        self.internals = {
-            'base_dir': '/home/xedar/devel'
-          , 'conf_dir': '.clipm'
-        }
+
+        if not Config.get('base_dir'):  raise KeyError("you must specify base_dir")
+        if not Config.get('conf_dir'):  raise KeyError("you must specify conf_dir")
+        if not Config.get('clipm_dir'): raise KeyError("you must specify clipm_dir")
         
-        args.path = os.path.realpath( self.internals['base_dir'] + '/' + args.projname )
+        args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
 
         self.args = args
 
@@ -22,7 +25,8 @@ class State():
 
         if attr is not None: return attr
 
-        try:
-            return self.internals[name]
-        except KeyError:
-            return None
+        attr = Config.get(name)
+
+        if not attr: return None
+
+        return attr

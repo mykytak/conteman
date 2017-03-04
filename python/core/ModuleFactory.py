@@ -8,7 +8,7 @@ class ModuleFactory():
 
         for m in modules:
             try:
-                package = imp.load_source(m, '/home/xedar/devel/workflowScripts/python/modules/' + m + '.py')
+                package = imp.load_source(m, state.clipm_dir + '/modules/' + m + '.py')
                 cls = getattr(package, m.title())
                 if action in dir(cls):
                     act = getattr(cls, action)

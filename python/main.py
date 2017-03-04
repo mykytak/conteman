@@ -12,7 +12,7 @@ import argparse, sys
 
 from modules.base import BaseModule as base
 from core.state import State
-
+from core.Config import Config
 
 
 
@@ -49,7 +49,7 @@ def set_default_subparser(self, name, args=None):
 
 
 
-
+Config.parseEnv()
 
 
 
