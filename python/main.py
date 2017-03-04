@@ -84,7 +84,7 @@ args = root.parse_args()
 action = getattr(args.cls, args.action)
 state = State(args)
 
-projname = args.split('/')
+projname = args.projname.split('/')
 if len(projname) > 1:
     for d in projname[:-1]:
         state.base_dir += '/' + d
