@@ -68,7 +68,7 @@ main = parsers.add_parser('proj')
 actions = ['create', 'add', 'open', 'archive']
 main.add_argument('action', help="Action: {}".format('|'.join(actions)), choices=actions)
 main.add_argument('projname', help="Project name")
-main.add_argument('modules', nargs='*', default=None)
+main.add_argument('-m', '--modules', nargs='*', default=None)
 main.set_defaults(cls=base)
 
 modules = parsers.add_parser('module')
