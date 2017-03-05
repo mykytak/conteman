@@ -15,7 +15,7 @@ class ModuleFactory():
                 if action in dir(cls):
 
                     if action == 'create' and 'properties' in cls.__dict__:
-                        shell = InteractiveShell.get(cls.properties(), m)
+                        shell = InteractiveShell.build_user_config(cls.properties(), m)
 
                     # if shell, merge with state.m
                     if shell is not None:

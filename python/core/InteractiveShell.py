@@ -9,12 +9,6 @@ class InteractiveShell():
         self.choices.name = value
 
 
-    # def __init__(self):
-    @classmethod
-    def get(cls, props, module):
-        return cls.build_user_config(props, module)
-
-
     @classmethod
     def write(cls, path):
         with open(path + '/climp.yml', 'w') as outfile:
