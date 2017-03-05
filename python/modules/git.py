@@ -27,17 +27,12 @@ class Git():
     def create(cls, state):
         projname = state.projname
 
-        conf = {
-            'username': 'Mykytak'
-          , 'email': 'mykytak.ua@gmail.com'
-        }
-
         callFunc = cls._call(state.path)
 
         try:
             output = getoutput("git init {}".format(state.path))
-            callFunc("git config user.name {}".format(conf['username']))
-            callFunc("git config user.email {}".format(conf['email']))
+            callFunc("git config user.name {}".format(state.git.username))
+            callFunc("git config user.email {}".format(state.git.email))
             with open("{}".format(state.path + '/.gitignore'), 'w') as f:
                 ignore = state.conf_dir + '\ndoc'
                 print( ignore, file=f )

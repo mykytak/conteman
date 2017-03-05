@@ -12,19 +12,21 @@ class Vagrant():
         call(cmd, shell=True)
         # "ubuntu/trusty64"
 
-        vagrantfile = state.path + '/Vagrant'
+        vagrantfile = state.path + '/Vagrantfile'
 
         cls._sed('"base"', '"ubuntu\/trusty64"', vagrantfile)
 
-        network ='''  config.vm.network "public_network", type: "dhcp"\n  config.vm.hostname = "{}.dev"
-  config.landrush.enabled = true
-  config.landrush.tld = ".dev"
+        network ='''\
+  config.vm.network "public_network", type: "dhcp"\\n\
+  config.vm.hostname = "{}.dev"\\n\
+  config.landrush.enabled = true\\n\
+  config.landrush.tld = ".dev"\\n\
   config.landrush.guest_redirect_dns = false'''.format(state.projname)
 
 
-        cmd = '''sed '/^a test$/{
-       $!{ N        # append the next line when not on the last line
-         s/^{}$/{}/
+        cmd = '''sed -i '/^{}/{{
+       $!{{ N        # append the next line when not on the last line
+         s/^{}/{}/
                     # now test for a successful substitution, otherwise
                     #+  unpaired "a test" lines would be mis-handled
          t sub-yes  # branch_on_substitute (goto label :sub-yes)
@@ -34,7 +36,11 @@ class Vagrant():
          D          # pattern_ltrunc(line+nl)_top/cycle
          :sub-yes   # a label (the goto target of the 't' branch)
                     # fall through to final auto-pattern_print (2 lines)
-       }    
-     }' {}  '''.format('\'# config.vm.network "public_network"\'', network, vagrantfile)
+       }}    
+     }}' {}
+         '''
+
+
+        cmd = cmd.format('  # config.vm.network "public_network"', '  # config.vm.network "public_network"', network, vagrantfile)
 
         call(cmd, shell=True)

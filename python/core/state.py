@@ -18,7 +18,9 @@ class State():
 
         if os.path.isfile(args.path + '/climp.yml'):
             with open(args.path + '/climp.yml', 'r') as f:
-                self.projconf = yaml.load(f)
+                ymlConf = yaml.load(f)
+                if ymlConf is not None:
+                    self.projconf = yaml.load(f)
 
         self.args = args
 
@@ -30,7 +32,7 @@ class State():
 
         try:
             return self.projconf[name]
-        except KeyError:
+        except (KeyError, TypeError):
             attr = None
 
         attr = Config.get(name)
