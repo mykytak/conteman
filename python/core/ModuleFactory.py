@@ -7,7 +7,7 @@ class ModuleFactory():
 
     @staticmethod
     def broadcast(action, modules, state = None):
-
+        print(action)
         for m in modules:
             try:
                 package = imp.load_source(m, state.climp_dir + '/modules/' + m + '.py')
@@ -16,9 +16,11 @@ class ModuleFactory():
 
                     if action == 'create' and 'properties' in cls.__dict__:
                         shell = InteractiveShell.get(cls.properties(), m)
-                    
-                    # return
+
                     # if shell, merge with state.m
+                    if shell is not None:
+                        setattr(state, m, shell)
+
                     act = getattr(cls, action)
                     act(state)
             except (ImportError, FileNotFoundError) as e:

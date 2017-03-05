@@ -12,7 +12,7 @@ class InteractiveShell():
     # def __init__(self):
     @classmethod
     def get(cls, props, module):
-        cls.build_user_config(props, module)
+        return cls.build_user_config(props, module)
 
 
     @classmethod
@@ -30,8 +30,8 @@ class InteractiveShell():
             
             cls.configs[module][prop] = input(obj['required'][prop] + ": ")
 
-
-        return
+        print(cls.configs[module])
+        return cls.configs[module]
 
 
     @classmethod

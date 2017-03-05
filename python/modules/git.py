@@ -28,11 +28,11 @@ class Git():
         projname = state.projname
 
         callFunc = cls._call(state.path)
-
+        print(state.__dict__)
         try:
             output = getoutput("git init {}".format(state.path))
-            callFunc("git config user.name {}".format(state.git.username))
-            callFunc("git config user.email {}".format(state.git.email))
+            callFunc("git config user.name {state.git[username]}".format(state=state))
+            callFunc("git config user.email {state.git[email]}".format(state=state))
             with open("{}".format(state.path + '/.gitignore'), 'w') as f:
                 ignore = state.conf_dir + '\ndoc'
                 print( ignore, file=f )

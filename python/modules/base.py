@@ -37,8 +37,9 @@ class BaseModule():
 
         # add record to db
 
-
-    def add(self): pass
+    @classmethod
+    def add(cls, state):
+        print('addd', state.__dict__)
 
     @classmethod
     def open(cls, state):
