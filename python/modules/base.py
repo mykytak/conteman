@@ -18,11 +18,7 @@ class BaseModule():
 
         for f in ['/', '/src', '/db', '/doc', '/' + state.conf_dir, '/tests']:
             if os.path.exists(path + f): continue
-            os.makedirs(path + f, mode)
-
-        # open(path + '/.propen', 'a').close()
-        # with open(path + '/climp.yml', 'w') as outfile:
-        #     yaml.dump(configs, outfile, default_flow_style=False)        
+            os.makedirs(path + f, mode)  
 
 
         # project configuration stored here.
@@ -37,9 +33,14 @@ class BaseModule():
 
         # add record to db
 
+
     @classmethod
     def add(cls, state):
-        print('addd', state.__dict__)
+        for prop in state.projconf:
+            if prop in state.modules:
+                state.modules.remove(prop)
+        print(state.modules)
+
 
     @classmethod
     def open(cls, state):

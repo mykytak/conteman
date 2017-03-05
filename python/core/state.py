@@ -15,12 +15,12 @@ class State():
         if not Config.get('climp_dir'): raise KeyError("you must specify clipm_dir")
 
         args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
-
+        print(args.path)
         if os.path.isfile(args.path + '/climp.yml'):
             with open(args.path + '/climp.yml', 'r') as f:
                 ymlConf = yaml.load(f)
                 if ymlConf is not None:
-                    self.projconf = yaml.load(f)
+                    self.projconf = ymlConf
 
         self.args = args
 
