@@ -10,8 +10,16 @@ class InteractiveShell():
 
 
     @classmethod
-    def write(cls, path):
+    def write(cls, path, projconf=None):
+
+        print(projconf)
+
+        if projconf is not None:
+            print('NOT NONE')
+            cls.configs.update(projconf)
+
         with open(path + '/climp.yml', 'w') as outfile:
+            print(cls.configs)
             yaml.dump(cls.configs, outfile, default_flow_style=False)
 
 
@@ -19,8 +27,6 @@ class InteractiveShell():
     def build_user_config(cls, obj, module):
 
         cls.configs[module] = {}
-        print('!!!!!!!!!!!!!11', obj)
-        print('!!!!!!!!!!!!!11', 'required' in obj, 'default' in obj)
         if 'required' in obj:
             for prop in obj['required']:
                 cls.configs[module][prop] = input(obj['required'][prop] + ": ")

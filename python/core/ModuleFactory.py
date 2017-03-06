@@ -27,4 +27,4 @@ class ModuleFactory():
                 print("Module {} not found. {}".format(m, e))
 
         if action == 'create':
-            InteractiveShell.write(state.base_dir + '/' + state.projname)
+            InteractiveShell.write(state.base_dir + '/' + state.projname, state.projconf)
