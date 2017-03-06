@@ -19,10 +19,15 @@ class InteractiveShell():
     def build_user_config(cls, obj, module):
 
         cls.configs[module] = {}
-        
-        for prop in obj['required']:
-            
-            cls.configs[module][prop] = input(obj['required'][prop] + ": ")
+        print('!!!!!!!!!!!!!11', obj)
+        print('!!!!!!!!!!!!!11', 'required' in obj, 'default' in obj)
+        if 'required' in obj:
+            for prop in obj['required']:
+                cls.configs[module][prop] = input(obj['required'][prop] + ": ")
+
+        if 'default' in obj:
+            for prop in obj['default']:
+                cls.configs[module][prop] = obj['default'][prop]
 
         print(cls.configs[module])
         return cls.configs[module]

@@ -14,6 +14,16 @@ class Firefox():
 
         print( getoutput(cmd) )
 
+
+    @staticmethod
+    def properties():
+        return {
+            "default": {
+                "exists": "true"
+            }
+        }
+
+
     def open(state):
         name = state.projname
         cmd = 'firefox -P "{}" -no-remote &'.format(name)
