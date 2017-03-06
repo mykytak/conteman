@@ -12,14 +12,10 @@ class InteractiveShell():
     @classmethod
     def write(cls, path, projconf=None):
 
-        print(projconf)
-
         if projconf is not None:
-            print('NOT NONE')
             cls.configs.update(projconf)
 
         with open(path + '/climp.yml', 'w') as outfile:
-            print(cls.configs)
             yaml.dump(cls.configs, outfile, default_flow_style=False)
 
 

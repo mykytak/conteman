@@ -39,7 +39,6 @@ class BaseModule():
         for prop in state.projconf:
             if prop in state.modules:
                 state.modules.remove(prop)
-        print(state.modules, state.projconf)
         if len(state.modules) == 0:
             print('No modules to install')
         else:

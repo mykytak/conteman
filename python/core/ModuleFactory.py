@@ -7,7 +7,6 @@ class ModuleFactory():
 
     @staticmethod
     def broadcast(action, modules, state = None):
-        print(action)
         for m in modules:
             try:
                 package = imp.load_source(m, state.climp_dir + '/modules/' + m + '.py')
