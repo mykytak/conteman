@@ -1,10 +1,6 @@
 from subprocess import call
 
 class Vagrant():
-    @staticmethod
-    def _sed(what, to, file):
-        call('sed -i s/{}/{}/ {}'.format(what, to, file), shell=True)
-
     @classmethod
     def create(cls, state):
         cmd = 'cd {}; vagrant init'.format(state.path)
@@ -14,7 +10,7 @@ class Vagrant():
 
         vagrantfile = state.path + '/Vagrantfile'
 
-        cls._sed('"base"', '"ubuntu\/trusty64"', vagrantfile)
+        call('sed -i s/{}/{}/ {}'.format('"base"', '"ubuntu\/trusty64"', vagrantfile))
 
         network ='''\
   config.vm.network "public_network", type: "dhcp"\\n\
@@ -44,3 +40,8 @@ class Vagrant():
         cmd = cmd.format('  # config.vm.network "public_network"', '  # config.vm.network "public_network"', network, vagrantfile)
 
         call(cmd, shell=True)
+
+    def open(state):
+        output = getoutput("cd {}; vagrant up".format(state.projname), shell=True)
+
+        print(output)

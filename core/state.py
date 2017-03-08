@@ -15,7 +15,7 @@ class State():
         if not Config.get('climp_dir'): raise KeyError("you must specify clipm_dir")
 
         args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
-        print(args.path)
+        
         if os.path.isfile(args.path + '/climp.yml'):
             with open(args.path + '/climp.yml', 'r') as f:
                 ymlConf = yaml.load(f)
@@ -25,7 +25,7 @@ class State():
         self.args = args
 
 
-    def __getattr__(self, name):
+    def __getattr__(self, name, default = None):
         attr = getattr(self.args, name, None)
 
         if attr is not None: return attr
@@ -37,6 +37,4 @@ class State():
 
         attr = Config.get(name)
 
-        if not attr: return None
-
-        return attr
+        return attr if attr else default
