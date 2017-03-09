@@ -8,16 +8,16 @@ class State():
 
     def __init__(self, args):
 
-        # @todo: parse ~/.climprc
+        # @todo: parse ~/.conteman
 
         if not Config.get('base_dir'):  raise KeyError("you must specify base_dir")
         if not Config.get('conf_dir'):  raise KeyError("you must specify conf_dir")
-        if not Config.get('climp_dir'): raise KeyError("you must specify clipm_dir")
+        if not Config.get('conteman_dir'): raise KeyError("you must specify conteman_dir")
 
         args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
         
-        if os.path.isfile(args.path + '/climp.yml'):
-            with open(args.path + '/climp.yml', 'r') as f:
+        if os.path.isfile(args.path + '/conteman.yml'):
+            with open(args.path + '/conteman.yml', 'r') as f:
                 ymlConf = yaml.load(f)
                 if ymlConf is not None:
                     self.projconf = ymlConf

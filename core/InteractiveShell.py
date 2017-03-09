@@ -15,7 +15,7 @@ class InteractiveShell():
         if projconf is not None:
             cls.configs.update(projconf)
 
-        with open(path + '/climp.yml', 'w') as outfile:
+        with open(path + '/conteman.yml', 'w') as outfile:
             yaml.dump(cls.configs, outfile, default_flow_style=False)
 
 

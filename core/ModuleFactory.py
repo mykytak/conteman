@@ -9,10 +9,11 @@ class ModuleFactory():
     def broadcast(action, modules, state = None):
         for m in modules:
             try:
-                package = imp.load_source(m, state.climp_dir + '/modules/' + m + '.py')
+                package = imp.load_source(m, state.conteman_dir + '/modules/' + m + '.py')
                 cls = getattr(package, m.title())
                 if action in dir(cls):
 
+                    shell = None
                     if action == 'create' and 'properties' in cls.__dict__:
                         shell = InteractiveShell.build_user_config(cls.properties(), m)
 
