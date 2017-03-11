@@ -1,7 +1,13 @@
 import os, sys, yaml
 
 sys.path.insert(0, os.path.abspath('../core'))
-from core.ModuleFactory import ModuleFactory as factory
+from core.Command import Command
+
+
+def register():
+    Command.register('base:create', BaseModule.create)
+
+
 
 class BaseModule():
     # action for configure project before start
@@ -29,7 +35,7 @@ class BaseModule():
             return #no modules passed
 
         # broadcast action to modules
-        factory.broadcast('create', state.modules, state)
+        # factory.broadcast('create', state.modules, state)
 
         # add record to db
 
@@ -42,12 +48,14 @@ class BaseModule():
         if len(state.modules) == 0:
             print('No modules to install')
         else:
-            factory.broadcast('create', state.modules, state)
+            # factory.broadcast('create', state.modules, state)
+            pass
 
 
     @classmethod
     def open(cls, state):
-        factory.broadcast('open', state.modules, state)
+        # factory.broadcast('open', state.modules, state)
+        pass
         # run .projopen
 
     def archive(self):

@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
-# from utils import *
-# from constants import *
-# from db import DB as db
+from core.ModuleParser import ModuleParser
+from core.Command import Command
+from core.Config import Config
 
-# from modules.git import GitModule
-# from core.project import Project
-# from core.router import Router
+ModuleParser.parse()
+
+print( Command.list() )
+
+exit()
+
 
 import argparse, sys, yaml
 
@@ -56,10 +59,13 @@ def test(args):
     print('main with ', args)
 main = parsers.add_parser('proj')
 
+# parse modules
+# add yml with enabled modules
+# form actions
 
 actions = ['create', 'add', 'open', 'archive']
+main.add_argument('contextname', help="Context name (name of the project for example)")
 main.add_argument('action', help="Action: {}".format('|'.join(actions)), choices=actions)
-main.add_argument('projname', help="Project name")
 main.add_argument('-m', '--modules', nargs='*', default=None)
 main.set_defaults(cls=base)
 
