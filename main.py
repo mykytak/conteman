@@ -46,10 +46,10 @@ class ModuleAction(argparse.Action):
 
     def __call__(self, parser, args, values, option_string=None):
         # -m modulename moduleparams
-        print('call args', args, values)
+        print('call args', args, values, parser, option_string)
 
         # parse params here ? and command call later? I think so
-        Command.call()
+        atts = Command.parse(values)
         setattr(args, self.dest, values)
 
 parser = argparse.ArgumentParser()
@@ -57,7 +57,7 @@ parser.add_argument('-m', '--module', nargs='*', default=None, action=ModuleActi
 
 args = parser.parse_args()
 
-print(args)
+print('module', args.module)
 
 # main.py create proj -m firefox name:myfox -m sublime 
 

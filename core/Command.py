@@ -1,9 +1,20 @@
 from .ModuleParser import ModuleParser
 
+# create command instances?
 class Command:
     # parse all modules (?)
 
     __commands = {}
+
+    name = None
+    parser = None
+    modules = None
+
+    def __init__(self, name):
+        self.name = name
+
+    def addModule(self, module, clb, parser):
+        pass
 
     # depends on ModuleParser
     @classmethod
@@ -11,11 +22,26 @@ class Command:
         (module, command) = name.split(':')
 
         if command not in cls.__commands:
-            cls.__commands[command] = {
-                'modules': [{module: {'clb': clb, 'parser': parser}}]
-            }
-        else:
-            cls.__commands[command]['modules'].append({module: {'clb': clb, 'parser': parser}})
+            cls.__commands[command] = Command(command)
+
+        cls.__commands[command].addModule(module, clb, parser)
+        # cmd = cls.__commands[command]
+        # cmd.register(module, clb, parser)
+
+        # if command not in cls.__commands:
+        #     cmd = Command(command)
+        #     cmd.register(module, clb, parser)
+        #     cls.__commands[command] = cmd
+        # else
+        #     cmd.register(module, clb, parser)
+
+
+        # if command not in cls.__commands:
+        #     cls.__commands[command] = {
+        #         'modules': [{module: {'clb': clb, 'parser': parser}}]
+        #     }
+        # else:
+        #     cls.__commands[command]['modules'].append({module: {'clb': clb, 'parser': parser}})
 
     @classmethod
     def list(cls):
@@ -29,6 +55,10 @@ class Command:
         m = cls.__commands[command][module]
 
         m['clb']( m['parser'](params) )
+
+    @classmethod
+    def parse(cls, inputList):
+        pass
 
 
 # get current module
