@@ -1,4 +1,4 @@
-import os, sys, yaml
+import os, sys, yaml, argparse
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.Command import Command
@@ -6,8 +6,6 @@ from core.Command import Command
 
 def register():
     Command.register('base:create', BaseModule.create)
-
-
 
 class BaseModule():
     # action for configure project before start

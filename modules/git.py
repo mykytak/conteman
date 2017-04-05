@@ -1,10 +1,16 @@
-import os, sys
+import os, sys, argparse
 
 # https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
 # https://docs.python.org/3/library/argparse.html#sub-commands
 # https://habrahabr.ru/post/301532/
 
+sys.path.insert(0, os.path.abspath('../core'))
+from core.Command import Command
+
 from subprocess import getoutput, call, check_output, CalledProcessError
+
+def register():
+    Command.register('git:create', Git.create)
 
 class Git():
     @classmethod
@@ -22,6 +28,13 @@ class Git():
                 "email": "Your git email"
             }
         }
+
+    @staticmethod
+    def parser():
+        main = argparse.ArgumentParser()
+        main.add_argument('-u', '--user')
+        main.add_argument('-e', '--email')
+        return lambda x: main.parse_args(x)
 
     @classmethod
     def create(cls, state):

@@ -7,19 +7,29 @@ class Command:
 
     # depends on ModuleParser
     @classmethod
-    def register(cls, name, clb, args={}):
+    def register(cls, name, clb, parser=lambda: {}):
         (module, command) = name.split(':')
 
         if command not in cls.__commands:
             cls.__commands[command] = {
-                'modules': [{module: {'clb': clb, 'args': args}}]
+                'modules': [{module: {'clb': clb, 'parser': parser}}]
             }
         else:
-            cls.__commands[command]['modules'].append({module: {'clb': clb, 'args': args}})
+            cls.__commands[command]['modules'].append({module: {'clb': clb, 'parser': parser}})
 
     @classmethod
     def list(cls):
         return cls.__commands
+
+    @classmethod
+    def call(cls, command, module, params):
+        if command not in cls.__commands:
+            raise Exception('Command {} not found.'.format(command))
+
+        m = cls.__commands[command][module]
+
+        m['clb']( m['parser'](params) )
+
 
 # get current module
 # class Module():

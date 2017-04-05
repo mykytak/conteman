@@ -8,6 +8,59 @@ ModuleParser.parse()
 
 print( Command.list() )
 
+
+
+
+import argparse, sys
+
+class ModuleAction(argparse.Action):
+
+    def __init__(self,
+                option_strings,
+                dest,
+                nargs=None,
+                const=None,
+                default=None,
+                type=None,
+                choices=None,
+                required=False,
+                help=None,
+                metavar=None):
+
+        print( option_strings, dest, nargs, const, default, type, choices, required, help, metavar )
+
+        # print(option_strings)
+
+        super(ModuleAction, self).__init__(
+                option_strings=option_strings,
+                dest=dest,
+                nargs=nargs,
+                const=const,
+                default=default,
+                type=type,
+                choices=choices,
+                required=required,
+                help=help,
+                metavar=metavar
+            )
+
+    def __call__(self, parser, args, values, option_string=None):
+        # -m modulename moduleparams
+        print('call args', args, values)
+
+        # parse params here ? and command call later? I think so
+        Command.call()
+        setattr(args, self.dest, values)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-m', '--module', nargs='*', default=None, action=ModuleAction)
+
+args = parser.parse_args()
+
+print(args)
+
+# main.py create proj -m firefox name:myfox -m sublime 
+
 exit()
 
 
@@ -66,7 +119,10 @@ main = parsers.add_parser('proj')
 actions = ['create', 'add', 'open', 'archive']
 main.add_argument('contextname', help="Context name (name of the project for example)")
 main.add_argument('action', help="Action: {}".format('|'.join(actions)), choices=actions)
-main.add_argument('-m', '--modules', nargs='*', default=None)
+
+main.add_argument('-m', '--module', nargs='*', default=None) # -m module1 arg1 -m module2 -m module3 arg1 arg2 arg3
+main.add_argument('-ms', '--modules', default=None) # -ms module1 module2 module3
+
 main.set_defaults(cls=base)
 
 modules = parsers.add_parser('module')
@@ -77,6 +133,8 @@ modules.set_defaults(cls='Some random text here')
 
 root.set_default_subparser('proj')
 args = root.parse_args()
+
+# _parse_known_args
 
 
 action = getattr(args.cls, args.action)

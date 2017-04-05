@@ -8,8 +8,6 @@ class ModuleParser():
     # parse modules
     # 
 
-    current = None
-
     @classmethod
     def parse(cls):
         moddir = os.path.join(Config.get('conteman_dir'), 'modules')
@@ -20,16 +18,25 @@ class ModuleParser():
             modpath = os.path.join(moddir, m)
             is_simple = os.path.isfile( modpath )
 
-            cls.current = m
-
             if is_simple:
                 package = imp.load_source(m, modpath)
 
-                # remove all this, action must be! Without registration module can do nothing at all
+
                 action = getattr(package, 'register', None)
 
                 if callable(action):
                     action()
+            else:
+                print('You can use only one-file modules right now.')
+                continue
+
+                modpath = os.path.join(modpath, 'init.py' )
+                # print(modpath, m)
+                # exit()
+
+                package = imp.load_source(m + '/init.py', modpath)
+
+                print(package)
 
 
 # @staticmethod
