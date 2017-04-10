@@ -5,7 +5,7 @@ from core.Command import *
 from core.Config import Config
 from core.state import State
 
-import logging
+import logging, argparse, sys
 
 logging.basicConfig( level=logging.DEBUG
                    , format='[%(asctime)s %(filename)s:%(lineno)d] %(message)s'
@@ -13,40 +13,21 @@ logging.basicConfig( level=logging.DEBUG
 
 ModuleParser.parse()
 
-logging.debug( CommandObserver.list() )
-
-
-
-
-import argparse, sys
-
-# class ModuleAction(argparse.Action):
-
-#     def __call__(self, parser, args, values, option_string=None):
-#         # -m modulename moduleparams
-#         # print('call args', args, values, parser, option_string)
-
-#         # print('command?', parser.command)
-
-#         # atts = CommandObserver.parse(values)
-
-#         # print('parsed atts: ', atts)
-
-#         # no parsing here :(  I don't know choosed command
-
-#         setattr(args, self.dest, values)
-
 parser = argparse.ArgumentParser()
 parser.add_argument('command')
+parser.add_argument('name', nargs='?')
 parser.add_argument('-m', '--module', nargs='*', default=[], action='append')
 
 args = parser.parse_args()
 
 state = State(args)
 
-# normalize args? Update through state?
+res = CommandObserver.execute(args.command, state)
 
-# print('module', args.module)
+if res:
+    print('Done!')
+else:
+    print('Failure.')
 
 # main.py create proj -m firefox name:myfox -m sublime 
 

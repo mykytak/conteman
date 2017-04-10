@@ -1,11 +1,13 @@
 from .ModuleParser import ModuleParser
-import logging
+import logging, sys, os, traceback
+
+from itertools import chain
 
 class CommandObserver:
     __commands = {}
 
     @classmethod
-    def register(cls, name, clb, parser=lambda: {}):
+    def register(cls, name, clb, parser=lambda x: {}):
         (module, command) = name.split(':')
 
         if command not in cls.__commands:
@@ -32,34 +34,78 @@ class CommandObserver:
             raise Exception('Command {} not found.'.format(command))
 
         cmd = cls.__commands[command]
-        cmd.parseArgs(args)
+        return cmd.parseArgs(args)
+
+    @classmethod
+    def execute(cls, command, args):
+        if command not in cls.__commands:
+            raise Exception('Cannot execute command {}. Command not found.'.format(command))
+
+        cmd = cls.__commands[command]
+        res = cmd.execute(args)
+
+        if not res:
+            print('Command execution process failure')
+            return False
+
+        return True
 
 
 class Command:
     name = None
     modules = {}
+    execModules = []
 
     def __init__(self, name):
         self.name = name
 
     def addModule(self, module, clb, parser):
         self.modules[module] = {
-            clb: clb,
-            parser: parser
+            'clb': clb,
+            'parser': parser
         }
 
     def parseArgs(self, inputList):
-        margs = inputList.module
+
+        margs = []
+        for i in inputList.module:
+            margs.extend(i)
+
+        res = {}
 
         for marg in margs:
             try:
-                argsList = marg[0].split(' ')
+                logging.debug(marg)
+
+                argsList = marg.split(' ')
+
                 m = argsList[0]
-                self.args[m] = self.modules[m][parser](argsList)
+                res[m] = self.modules[m]['parser'](argsList[1:])
+                self.execModules.append(m)
             except KeyError:
                 print('Module {} not found'.format(m))
 
-        return True
+        return res
+
+    def execute(self, args):
+        m = None
+        try:
+            for m in self.execModules:
+                clb = self.modules[m]['clb']
+                clb(args)
+
+                print( 'Module {} ... done'.format(m) )
+
+            return True
+
+        except Exception as e:
+            logging.debug('Module %s error: %s', m, e)
+            traceback.print_stack()
+            return False
+
+        finally:
+            self.execModules = []
+
 
 
 # get current module

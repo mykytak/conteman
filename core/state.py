@@ -7,17 +7,23 @@ import logging
 
 class State():
     projconf = {}
+    moduleArgs = {}
+
+    path = ''
+    name = None
+    command = None
 
     def __init__(self, args):
 
         # @todo: parse ~/.conteman
 
-        if not Config.get('base_dir'):  raise KeyError("you must specify base_dir")
-        if not Config.get('conf_dir'):  raise KeyError("you must specify conf_dir")
+        if not Config.get('base_dir'):     raise KeyError("you must specify base_dir")
+        if not Config.get('conf_dir'):     raise KeyError("you must specify conf_dir")
         if not Config.get('conteman_dir'): raise KeyError("you must specify conteman_dir")
 
-        # args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
-        args.path = ''
+        if args.name:
+            self.path = os.path.realpath( Config.get('base_dir') + '/' + args.name )
+            self.name = args.name
 
         self.command = args.command
 
@@ -32,16 +38,17 @@ class State():
                     self.projconf = ymlConf
 
     def parse_args(self, args):
-        logging.debug('args: %s', args)
         parsed = CommandObserver.parseCmdArgs(self.command, args)
 
-        logging.debug(parsed)
+        self.moduleArgs = parsed
 
 
     def __getattr__(self, name, default = None):
-        attr = getattr(self.args, name, None)
+        if name == 'name' and not self.name:
+            raise Exception('This command requires project name.')
 
-        if attr is not None: return attr
+        if name in self.moduleArgs:
+            return self.moduleArgs[name]
 
         try:
             return self.projconf[name]
