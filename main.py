@@ -1,63 +1,52 @@
 #!/usr/bin/python3
 
 from core.ModuleParser import ModuleParser
-from core.Command import Command
+from core.Command import *
 from core.Config import Config
+from core.state import State
+
+import logging
+
+logging.basicConfig( level=logging.DEBUG
+                   , format='[%(asctime)s %(filename)s:%(lineno)d] %(message)s'
+                   )
 
 ModuleParser.parse()
 
-print( Command.list() )
+logging.debug( CommandObserver.list() )
 
 
 
 
 import argparse, sys
 
-class ModuleAction(argparse.Action):
+# class ModuleAction(argparse.Action):
 
-    def __init__(self,
-                option_strings,
-                dest,
-                nargs=None,
-                const=None,
-                default=None,
-                type=None,
-                choices=None,
-                required=False,
-                help=None,
-                metavar=None):
+#     def __call__(self, parser, args, values, option_string=None):
+#         # -m modulename moduleparams
+#         # print('call args', args, values, parser, option_string)
 
-        print( option_strings, dest, nargs, const, default, type, choices, required, help, metavar )
+#         # print('command?', parser.command)
 
-        # print(option_strings)
+#         # atts = CommandObserver.parse(values)
 
-        super(ModuleAction, self).__init__(
-                option_strings=option_strings,
-                dest=dest,
-                nargs=nargs,
-                const=const,
-                default=default,
-                type=type,
-                choices=choices,
-                required=required,
-                help=help,
-                metavar=metavar
-            )
+#         # print('parsed atts: ', atts)
 
-    def __call__(self, parser, args, values, option_string=None):
-        # -m modulename moduleparams
-        print('call args', args, values, parser, option_string)
+#         # no parsing here :(  I don't know choosed command
 
-        # parse params here ? and command call later? I think so
-        atts = Command.parse(values)
-        setattr(args, self.dest, values)
+#         setattr(args, self.dest, values)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-m', '--module', nargs='*', default=None, action=ModuleAction)
+parser.add_argument('command')
+parser.add_argument('-m', '--module', nargs='*', default=[], action='append')
 
 args = parser.parse_args()
 
-print('module', args.module)
+state = State(args)
+
+# normalize args? Update through state?
+
+# print('module', args.module)
 
 # main.py create proj -m firefox name:myfox -m sublime 
 

@@ -1,22 +1,9 @@
 from .ModuleParser import ModuleParser
+import logging
 
-# create command instances?
-class Command:
-    # parse all modules (?)
-
+class CommandObserver:
     __commands = {}
 
-    name = None
-    parser = None
-    modules = None
-
-    def __init__(self, name):
-        self.name = name
-
-    def addModule(self, module, clb, parser):
-        pass
-
-    # depends on ModuleParser
     @classmethod
     def register(cls, name, clb, parser=lambda: {}):
         (module, command) = name.split(':')
@@ -24,24 +11,7 @@ class Command:
         if command not in cls.__commands:
             cls.__commands[command] = Command(command)
 
-        cls.__commands[command].addModule(module, clb, parser)
-        # cmd = cls.__commands[command]
-        # cmd.register(module, clb, parser)
-
-        # if command not in cls.__commands:
-        #     cmd = Command(command)
-        #     cmd.register(module, clb, parser)
-        #     cls.__commands[command] = cmd
-        # else
-        #     cmd.register(module, clb, parser)
-
-
-        # if command not in cls.__commands:
-        #     cls.__commands[command] = {
-        #         'modules': [{module: {'clb': clb, 'parser': parser}}]
-        #     }
-        # else:
-        #     cls.__commands[command]['modules'].append({module: {'clb': clb, 'parser': parser}})
+        cls.__commands[command].addModule(module, clb, parser)       
 
     @classmethod
     def list(cls):
@@ -57,8 +27,39 @@ class Command:
         m['clb']( m['parser'](params) )
 
     @classmethod
-    def parse(cls, inputList):
-        pass
+    def parseCmdArgs(cls, command, args):
+        if command not in cls.__commands:
+            raise Exception('Command {} not found.'.format(command))
+
+        cmd = cls.__commands[command]
+        cmd.parseArgs(args)
+
+
+class Command:
+    name = None
+    modules = {}
+
+    def __init__(self, name):
+        self.name = name
+
+    def addModule(self, module, clb, parser):
+        self.modules[module] = {
+            clb: clb,
+            parser: parser
+        }
+
+    def parseArgs(self, inputList):
+        margs = inputList.module
+
+        for marg in margs:
+            try:
+                argsList = marg[0].split(' ')
+                m = argsList[0]
+                self.args[m] = self.modules[m][parser](argsList)
+            except KeyError:
+                print('Module {} not found'.format(m))
+
+        return True
 
 
 # get current module

@@ -5,12 +5,12 @@ import os, sys, argparse
 # https://habrahabr.ru/post/301532/
 
 sys.path.insert(0, os.path.abspath('../core'))
-from core.Command import Command
+from core.Command import CommandObserver
 
 from subprocess import getoutput, call, check_output, CalledProcessError
 
 def register():
-    Command.register('git:create', Git.create)
+    CommandObserver.register('git:create', Git.create)
 
 class Git():
     @classmethod

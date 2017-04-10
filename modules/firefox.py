@@ -2,12 +2,12 @@ import sys, os
 from subprocess import call, getoutput
 
 sys.path.insert(0, os.path.abspath('../core'))
-from core.Command import Command
+from core.Command import CommandObserver
 
 # https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
 
 def register():
-    Command.register('firefox:create', Firefox.create)
+    CommandObserver.register('firefox:create', Firefox.create)
 
 class Firefox():
     @staticmethod

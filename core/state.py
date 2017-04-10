@@ -2,6 +2,8 @@ import os, sys, yaml
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.Config import Config
+from core.Command import *
+import logging
 
 class State():
     projconf = {}
@@ -14,7 +16,14 @@ class State():
         if not Config.get('conf_dir'):  raise KeyError("you must specify conf_dir")
         if not Config.get('conteman_dir'): raise KeyError("you must specify conteman_dir")
 
-        args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
+        # args.path = os.path.realpath( Config.get('base_dir') + '/' + args.projname )
+        args.path = ''
+
+        self.command = args.command
+
+        self.parse_args(args)
+
+        return
         
         if os.path.isfile(args.path + '/conteman.yml'):
             with open(args.path + '/conteman.yml', 'r') as f:
@@ -22,7 +31,11 @@ class State():
                 if ymlConf is not None:
                     self.projconf = ymlConf
 
-        self.args = args
+    def parse_args(self, args):
+        logging.debug('args: %s', args)
+        parsed = CommandObserver.parseCmdArgs(self.command, args)
+
+        logging.debug(parsed)
 
 
     def __getattr__(self, name, default = None):
