@@ -14,10 +14,10 @@ class Firefox():
     def create(state):
         mode = 0o775
 
-        name = state.projname
         path = state.path + '/' + state.conf_dir
 
-        cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(name, path + '/firefox_' + name)
+        # check if state.name already registered as firefox profile.
+        cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(state.name, path + '/firefox_' + state.name)
 
         print( getoutput(cmd) )
 
@@ -32,6 +32,5 @@ class Firefox():
 
 
     def open(state):
-        name = state.projname
-        cmd = 'firefox -P "{}" -no-remote &'.format(name)
+        cmd = 'firefox -P "{}" -no-remote &'.format(state.name)
         call(cmd, shell=True)

@@ -100,7 +100,8 @@ class Command:
 
         except Exception as e:
             logging.debug('Module %s error: %s', m, e)
-            traceback.print_stack()
+            # need additional info about what's exactly going wrong
+            # traceback.print_stack()
             return False
 
         finally:

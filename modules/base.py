@@ -1,9 +1,9 @@
-import os, sys, yaml, argparse
+import os, sys, yaml, argparse, logging
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.Command import CommandObserver
 
-
+# optional config for directories?
 def register():
     CommandObserver.register('base:create', BaseModule.create)
 
@@ -14,41 +14,11 @@ class BaseModule():
 
     @classmethod
     def create(cls, state):
-        path = state.base_dir + '/' + state.projname
         mode = 0o775
 
-        # if os.path.exists(projpath):
-        #     raise Exception("project already exist. Use 'add' or 'open'.")
-
         for f in ['/', '/src', '/db', '/doc', '/' + state.conf_dir, '/tests']:
-            if os.path.exists(path + f): continue
-            os.makedirs(path + f, mode)  
-
-
-        # project configuration stored here.
-        # something similar to node/bower configuration. Take options for modules, their configs etc.
-        # open(projpath + '/.proj.json', 'a').close()
-
-        if state.modules is None == 1:
-            return #no modules passed
-
-        # broadcast action to modules
-        # factory.broadcast('create', state.modules, state)
-
-        # add record to db
-
-
-    @classmethod
-    def add(cls, state):
-        for prop in state.projconf:
-            if prop in state.modules:
-                state.modules.remove(prop)
-        if len(state.modules) == 0:
-            print('No modules to install')
-        else:
-            # factory.broadcast('create', state.modules, state)
-            pass
-
+            if os.path.exists(state.path + f): continue
+            os.makedirs(state.path + f, mode)  
 
     @classmethod
     def open(cls, state):

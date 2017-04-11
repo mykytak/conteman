@@ -6,7 +6,7 @@ from core.Command import *
 import logging
 
 class State():
-    projconf = {}
+    conteconf = {}
     moduleArgs = {}
 
     path = ''
@@ -22,20 +22,24 @@ class State():
         if not Config.get('conteman_dir'): raise KeyError("you must specify conteman_dir")
 
         if args.name:
+            if '/' in args.name:
+                temp = args.name.split('/')
+                self.name = temp[-1]
+            else:
+                self.name = args.name
+
             self.path = os.path.realpath( Config.get('base_dir') + '/' + args.name )
-            self.name = args.name
 
         self.command = args.command
 
         self.parse_args(args)
 
-        return
-        
-        if os.path.isfile(args.path + '/conteman.yml'):
-            with open(args.path + '/conteman.yml', 'r') as f:
-                ymlConf = yaml.load(f)
-                if ymlConf is not None:
-                    self.projconf = ymlConf
+        if args.name:
+            if os.path.isfile(self.path + '/conteman.yml'):
+                with open(self.path + '/conteman.yml', 'r') as f:
+                    ymlConf = yaml.load(f)
+                    if ymlConf is not None:
+                        self.conteconf = ymlConf
 
     def parse_args(self, args):
         parsed = CommandObserver.parseCmdArgs(self.command, args)
@@ -51,10 +55,11 @@ class State():
             return self.moduleArgs[name]
 
         try:
-            return self.projconf[name]
+            return self.conteconf[name]
         except (KeyError, TypeError):
             attr = None
 
         attr = Config.get(name)
 
+        # interactive mode for None values here? 
         return attr if attr else default
