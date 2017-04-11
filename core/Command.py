@@ -13,7 +13,8 @@ class CommandObserver:
         if command not in cls.__commands:
             cls.__commands[command] = Command(command)
 
-        cls.__commands[command].addModule(module, clb, parser)       
+        cmd = cls.__commands[command]
+        cmd.addModule(module, clb, parser)       
 
     @classmethod
     def list(cls):
@@ -58,6 +59,12 @@ class Command:
 
     def __init__(self, name):
         self.name = name
+        self.modules = {}
+        self.execModules = []
+
+    def __repr__(self):
+        modules = list( self.modules.keys() )
+        return 'Command {}; modules: {};'.format(self.name, ', '.join(modules))
 
     def addModule(self, module, clb, parser):
         self.modules[module] = {
@@ -75,8 +82,6 @@ class Command:
 
         for marg in margs:
             try:
-                logging.debug(marg)
-
                 argsList = marg.split(' ')
 
                 m = argsList[0]
@@ -90,6 +95,7 @@ class Command:
     def execute(self, args):
         m = None
         try:
+            if self.execModules == []: self.execModules = self.modules
             for m in self.execModules:
                 clb = self.modules[m]['clb']
                 clb(args)
@@ -100,6 +106,7 @@ class Command:
 
         except Exception as e:
             logging.debug('Module %s error: %s', m, e)
+            print('Module {} error: {}', m, e)
             # need additional info about what's exactly going wrong
             # traceback.print_stack()
             return False

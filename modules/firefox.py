@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, logging
 from subprocess import call, getoutput
 
 sys.path.insert(0, os.path.abspath('../core'))
@@ -8,6 +8,7 @@ from core.Command import CommandObserver
 
 def register():
     CommandObserver.register('firefox:create', Firefox.create)
+    CommandObserver.register('firefox:open',   Firefox.open)
 
 class Firefox():
     @staticmethod
@@ -32,5 +33,6 @@ class Firefox():
 
 
     def open(state):
+        logging.debug('opening firefox')
         cmd = 'firefox -P "{}" -no-remote &'.format(state.name)
         call(cmd, shell=True)

@@ -13,6 +13,8 @@ logging.basicConfig( level=logging.DEBUG
 
 ModuleParser.parse()
 
+logging.debug(CommandObserver.list())
+
 parser = argparse.ArgumentParser()
 parser.add_argument('command')
 parser.add_argument('name', nargs='?')
