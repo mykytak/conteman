@@ -1,113 +1,35 @@
 #!/usr/bin/python3
 
-# from utils import *
-# from constants import *
-# from db import DB as db
-
-# from modules.git import GitModule
-# from core.project import Project
-# from core.router import Router
-
-import argparse, sys, yaml
-
-from modules.base import BaseModule as base
-from core.state import State
+from core.ModuleParser import ModuleParser
+from core.Command import *
 from core.Config import Config
+from core.state import State
 
+import logging, argparse, sys
 
+logging.basicConfig( level=logging.DEBUG
+                   , format='[%(asctime)s %(filename)s:%(lineno)d] %(message)s'
+                   )
 
-def set_default_subparser(self, name, args=None):
-    """default subparser selection. Call after setup, just before parse_args()
-    name: is the name of the subparser to call by default
-    args: if set is the argument list handed to parse_args()
+ModuleParser.parse()
 
-    , tested with 2.7, 3.2, 3.3, 3.4
-    it works with 2.6 assuming argparse is installed
-    """
-    subparser_found = False
-    for arg in sys.argv[1:]:
-        if arg in ['-h', '--help']:  # global help if no subparser
-            break
-    else:
-        for x in self._subparsers._actions:
-            if not isinstance(x, argparse._SubParsersAction):
-                continue
-            for sp_name in x._name_parser_map.keys():
-                if sp_name in sys.argv[1:]:
-                    subparser_found = True
-        if not subparser_found:
-            # insert default in first position, this implies no
-            # global options without a sub_parsers specified
-            if args is None:
-                sys.argv.insert(1, name)
-            else:
-                args.insert(0, name)
+logging.debug(CommandObserver.list())
 
+parser = argparse.ArgumentParser()
+parser.add_argument('command')
+parser.add_argument('name', nargs='?')
+parser.add_argument('-m', '--module', nargs='*', default=[], action='append')
 
-Config.parseEnv()
+args = parser.parse_args()
 
-argparse.ArgumentParser.set_default_subparser = set_default_subparser
-
-root = argparse.ArgumentParser()
-parsers = root.add_subparsers()
-
-
-def test(args):
-    print('main with ', args)
-main = parsers.add_parser('proj')
-
-
-actions = ['create', 'add', 'open', 'archive']
-main.add_argument('action', help="Action: {}".format('|'.join(actions)), choices=actions)
-main.add_argument('projname', help="Project name")
-main.add_argument('-m', '--modules', nargs='*', default=None)
-main.set_defaults(cls=base)
-
-modules = parsers.add_parser('module')
-modules.add_argument('name')
-modules.add_argument('action')
-modules.set_defaults(cls='Some random text here')
-
-
-root.set_default_subparser('proj')
-args = root.parse_args()
-
-
-action = getattr(args.cls, args.action)
 state = State(args)
 
-projname = args.projname.split('/')
-if len(projname) > 1:
-    for d in projname[:-1]:
-        state.base_dir += '/' + d
+res = CommandObserver.execute(args.command, state)
 
-    state.projname = projname[-1]
-
-action(state)
-
-
-
-
-
-
-
-# proj = ModuleFactory.get('main', args)
-
-# proj.action('create')
-
-
-
-
-
-# gitModule = GitModule('git', proj)
-
-
-# Router.routes({
-#         'create': lambda args: print(1)
-#     })
-
-# Router.action('create')
-
+if res:
+    print('Done!')
+else:
+    print('Failure.')
 
 """
 
