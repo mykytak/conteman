@@ -38,14 +38,10 @@ class Git():
 
     @classmethod
     def create(cls, state):
-        logging.debug('state.name: %s', state.name)
-        logging.debug('state.path: %s', state.path)
-
         projname = state.name
 
-
         callFunc = cls._call(state.path)
-        
+
         try:
             output = getoutput("git init {}".format(state.path))
             callFunc("git config user.name {state.git.user}".format(state=state))

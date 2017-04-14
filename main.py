@@ -13,8 +13,6 @@ logging.basicConfig( level=logging.DEBUG
 
 ModuleParser.parse()
 
-logging.debug(CommandObserver.list())
-
 parser = argparse.ArgumentParser()
 parser.add_argument('command')
 parser.add_argument('name', nargs='?')
@@ -23,6 +21,8 @@ parser.add_argument('-m', '--module', nargs='*', default=[], action='append')
 args = parser.parse_args()
 
 state = State(args)
+
+logging.debug(state.git.user)
 
 res = CommandObserver.execute(args.command, state)
 

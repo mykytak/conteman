@@ -1,4 +1,4 @@
-import os, imp
+import os, imp, yaml, logging
 
 class Config():
     
@@ -82,3 +82,18 @@ class Config():
         fileData.close()
 
         return fileDict
+
+    @classmethod
+    def loadConfigFile(cls, path):
+        if os.path.isfile(path):
+            with open(path, 'r') as f:
+                ymlConf = yaml.load(f)
+                return ymlConf if ymlConf is not None else {}
+
+        return {}
+
+    @classmethod
+    def saveConfigFile(cls, path, data):
+        with open(path, 'w') as f:
+            return yaml.dump(data, f, default_flow_style=False)
+
