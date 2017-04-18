@@ -9,6 +9,8 @@ class State():
     globconf = {}
     contextconf = {}
 
+    saveConfig = None
+
     moduleArgs = {}
 
     # name = None
@@ -34,21 +36,19 @@ class State():
 
             self.path = os.path.realpath( Config.get('base_dir') + '/' + args.name )
 
+        self.saveConfig = args.save
+
         self.command = args.command
 
         self.parse_args(args)
 
         if args.name: self.contextconf = Config.loadConfigFile(self.path + '/conteman.yml')
 
-        logging.debug(self.contextconf)
-
     def parse_args(self, args):
         parsed = CommandObserver.parseCmdArgs(self.command, args)
 
 
         self.moduleArgs = parsed
-
-        logging.debug('Parsed module args: %s', self.moduleArgs)
 
     def __getattr__(self, name):
         """
@@ -85,6 +85,8 @@ class State():
         type can be: local, global
         """
 
+        if not self.configSaveCheck(): return
+
         path = self.path + '/conteman.yml' if type == 'local' else '~/.conteman/conteman.yml'
 
         # merge context config with modules config
@@ -94,11 +96,19 @@ class State():
 
 
     def prepareLocalConfig(self):
+        modules = []
         for key, value in self.moduleArgs.items():
+            modules.append(key)
             self.contextconf[key] = vars(value) if isinstance(value, argparse.Namespace) else value
+
+        self.contextconf['modules'] = modules
 
         return self.contextconf
 
         # self.moduleArgs
         # Command.modules
 
+    def configSaveCheck(self):
+        if self.command == 'create' and (self.saveConfig or self.saveConfig is None): return True
+
+        return bool(self.saveConfig)

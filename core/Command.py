@@ -107,7 +107,6 @@ class Command:
             return True
 
         except Exception as e:
-            logging.debug('Module %s error: %s', m, e)
             print('Module {} error: {}'.format(m, e))
             # need additional info about what's exactly going wrong
             # traceback.print_stack()
