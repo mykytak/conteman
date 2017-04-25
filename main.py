@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+
+# pylint
+
 from core.ModuleParser import ModuleParser
 from core.Command import *
 from core.Config import Config
@@ -13,12 +16,13 @@ logging.basicConfig( level=logging.DEBUG
 
 ModuleParser.parse()
 
-logging.debug(CommandObserver.list())
-
 parser = argparse.ArgumentParser()
 parser.add_argument('command')
 parser.add_argument('name', nargs='?')
 parser.add_argument('-m', '--module', nargs='*', default=[], action='append')
+
+parser.add_argument('-s', '--save', action='store_true', default=None)
+parser.add_argument('--no-save', action='store_false', dest='save')
 
 args = parser.parse_args()
 

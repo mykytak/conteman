@@ -38,12 +38,12 @@ class CommandObserver:
         return cmd.parseArgs(args)
 
     @classmethod
-    def execute(cls, command, args):
+    def execute(cls, command, state):
         if command not in cls.__commands:
             raise Exception('Cannot execute command {}. Command not found.'.format(command))
 
         cmd = cls.__commands[command]
-        res = cmd.execute(args)
+        res = cmd.execute(state)
 
         if not res:
             print('Command execution process failure')
@@ -74,6 +74,8 @@ class Command:
 
     def parseArgs(self, inputList):
 
+        self.execModules = []
+
         margs = []
         for i in inputList.module:
             margs.extend(i)
@@ -92,77 +94,24 @@ class Command:
 
         return res
 
-    def execute(self, args):
+    def execute(self, state):
         m = None
         try:
             if self.execModules == []: self.execModules = self.modules
             for m in self.execModules:
                 clb = self.modules[m]['clb']
-                clb(args)
+                clb(state)
 
                 print( 'Module {} ... done'.format(m) )
 
             return True
 
         except Exception as e:
-            logging.debug('Module %s error: %s', m, e)
-            print('Module {} error: {}', m, e)
+            print('Module {} error: {}'.format(m, e))
             # need additional info about what's exactly going wrong
             # traceback.print_stack()
             return False
 
         finally:
-            self.execModules = []
-
-
-
-# get current module
-# class Module():
-#     @classmethod
-#     def init(cls):
-#         return { 'depends': []
-#                , 'params': []
-#                , 'commands': []
-#                }
-
-
-# moduledir:
-#     - init.py
-#     ...modulefiles
-
-# OR
-
-# modulefile.py
-
-# init.py/modulefile.py:
-
-# Command.register(name, callback_func, {
-#     'arg': {
-#         required: true #assume false if not present
-#     ,   name: 'argname'
-#     ,   default: 'defvalue'
-#     ,   depends: ['modules', 'dependency', 'for', 'this', 'command']
-#     }
-# })
-
-# manifest.yml:
-
-# commands:
-#     commname:
-#         callback
-
-# args:
-#     argname:
-#         required:
-#         name:
-#             longname
-#             sname
-
-#     argname:
-#         optional:
-#         name:
-#             longname
-#             sname
-#         default:
-#             007
-
+            state.save('local')
+            # save current config
