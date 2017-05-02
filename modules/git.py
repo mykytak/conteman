@@ -11,6 +11,7 @@ from subprocess import getoutput, call, check_output, CalledProcessError
 
 def register():
     CommandObserver.register('git:create', Git.create, Git.parser)
+    CommandObserver.register('git:update', Git.update, Git.parser)
 
 class Git():
     @classmethod
@@ -58,3 +59,24 @@ class Git():
 
 
         print('git create with state: {}'.format(state))
+
+
+    @classmethod
+    def update(cls, state):
+
+        user = getoutput("cd {}; git config user.name".format(state.path))
+        email = getoutput("cd {}; git config user.email".format(state.path))
+
+        if user and email:
+            state.git.user = user
+            state.git.email = email
+            return
+
+        callFunc = cls._call(state.path)
+
+        if user is None and state.git.user is not None:
+            callFunc("git config user.name {state.git.user}".format(state=state))
+
+        if email is None and state.git.email is not None:
+            callFunc("git config user.email {state.git.email}".format(state=state))
+
