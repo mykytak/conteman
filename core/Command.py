@@ -111,7 +111,7 @@ class Command:
     def execute(self, state):
         m = None
         try:
-            # if self.execModules == []: self.execModules = self.modules
+            if self.execModules == []: self.execModules = self.modules
 
             for m in self.execModules:
                 clb = self.modules[m]['clb']

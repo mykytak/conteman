@@ -16,11 +16,11 @@ class Firefox():
     def create(state):
         mode = 0o775
 
-        name = state.firefox.name if state.firefox.name is not None else '/firefox_' + state.name
-        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.conf_dir + name
+        name = state.firefox.name if state.firefox.name is not None else state.name
+        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.conf_dir
 
         # @todo: check if name already registered as firefox profile.
-        cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(name, path)
+        cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(name, path + '/firefox/' + state.name)
 
         print( getoutput(cmd) )
 
