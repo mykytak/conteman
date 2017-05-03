@@ -1,4 +1,4 @@
-import argparse, os
+import argparse, os, sys
 from subprocess import call
 
 sys.path.insert(0, os.path.abspath('../core'))
@@ -23,7 +23,7 @@ class Sublime():
     def extract(state):
         name = state.name if state.sublime.name is None else state.sublime.name
         name += '.sublime-project'
-        path = state.sublime.path if state.sublime.path is not none else
+        path = state.sublime.path if state.sublime.path is not None else \
                 '{state.path}/{state.conf_dir}'.format(state=state)
 
         return (path, name)
