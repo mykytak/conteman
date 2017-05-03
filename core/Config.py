@@ -1,4 +1,5 @@
 import os, imp, yaml, logging
+from .Command import Args
 
 class Config():
     
@@ -88,6 +89,12 @@ class Config():
         if os.path.isfile(path):
             with open(path, 'r') as f:
                 ymlConf = yaml.load(f)
+
+                if 'modules' in ymlConf:
+                    for m in ymlConf['modules']:
+                        if m in ymlConf:
+                            ymlConf[m] = Args(ymlConf[m])
+
                 return ymlConf if ymlConf is not None else {}
 
         return {}

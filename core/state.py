@@ -97,11 +97,17 @@ class State():
 
     def prepareLocalConfig(self):
         modules = []
+        res = self.contextconf
+
         for key, value in self.moduleArgs.items():
             modules.append(key)
-            self.contextconf[key] = vars(value) if isinstance(value, argparse.Namespace) else value
+            res[key] = value.__getstate__()
 
-        self.contextconf['modules'] = modules
+        if 'modules' in res:
+            for key in res['modules']:
+                res[key] = res[key].__getstate__()
+
+        res['modules'] += modules
 
         return self.contextconf
 
@@ -109,6 +115,6 @@ class State():
         # Command.modules
 
     def configSaveCheck(self):
-        if self.command == 'create' and (self.saveConfig or self.saveConfig is None): return True
+        if (self.command == 'create' or self.command == 'update') and (self.saveConfig or self.saveConfig is None): return True
 
         return bool(self.saveConfig)
