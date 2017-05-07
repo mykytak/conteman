@@ -40,15 +40,27 @@ class State():
 
         self.command = args.command
 
+        if args.name: self.contextconf = Config.loadConfigFile(self.path + '/conteman.yml')
+
         self.parse_args(args)
 
-        if args.name: self.contextconf = Config.loadConfigFile(self.path + '/conteman.yml')
 
     def parse_args(self, args):
         parsed = CommandObserver.parseCmdArgs(self.command, args)
 
-
         self.moduleArgs = parsed
+
+        # logging.debug(self.moduleArgs != {} or 'modules' not in self.contextconf or self.contextconf.modules == {})
+        if self.moduleArgs != {} or 'modules' not in self.contextconf or self.contextconf['modules'] == {}:
+            return
+
+        execModules = []
+        for m in self.contextconf['modules']:
+            self.moduleArgs[m] = self.contextconf[m]
+            execModules.append(m)
+
+        # this is so awful. Refactor this!
+        CommandObserver.list()[self.command].execModules = execModules
 
     def __getattr__(self, name):
         """
@@ -97,11 +109,20 @@ class State():
 
     def prepareLocalConfig(self):
         modules = []
+        res = self.contextconf
+
         for key, value in self.moduleArgs.items():
             modules.append(key)
-            self.contextconf[key] = vars(value) if isinstance(value, argparse.Namespace) else value
+            res[key] = value.__getstate__()
 
-        self.contextconf['modules'] = modules
+        if 'modules' in res:
+            for key in [x for x in res['modules'] if x not in modules]:
+                res[key] = res[key].__getstate__()
+
+        if 'modules' in res:
+            res['modules'] += modules
+        else:
+            res['modules'] = modules
 
         return self.contextconf
 
@@ -109,6 +130,6 @@ class State():
         # Command.modules
 
     def configSaveCheck(self):
-        if self.command == 'create' and (self.saveConfig or self.saveConfig is None): return True
+        if (self.command == 'create' or self.command == 'update') and (self.saveConfig or self.saveConfig is None): return True
 
         return bool(self.saveConfig)

@@ -1,5 +1,5 @@
-from .ModuleParser import ModuleParser
-import logging, sys, os, traceback
+# from .ModuleParser import ModuleParser
+import logging, sys, os, traceback, argparse
 
 from itertools import chain
 
@@ -52,6 +52,20 @@ class CommandObserver:
         return True
 
 
+class Args():
+    def __init__(self, args = {}):
+        self.args = args
+
+    def __getattr__(self, name):
+        # interactive shell here?
+        return self.args if name in self.args else None
+
+    def __setstate__(self, state):
+        self.args = state
+
+    def __getstate__(self):
+        return vars(self.args) if isinstance(self.args, argparse.Namespace) else self.args
+
 class Command:
     name = None
     modules = {}
@@ -87,7 +101,7 @@ class Command:
                 argsList = marg.split(' ')
 
                 m = argsList[0]
-                res[m] = self.modules[m]['parser'](argsList[1:])
+                res[m] = Args( self.modules[m]['parser'](argsList[1:]) )
                 self.execModules.append(m)
             except KeyError:
                 print('Module {} not found'.format(m))
@@ -98,6 +112,7 @@ class Command:
         m = None
         try:
             if self.execModules == []: self.execModules = self.modules
+
             for m in self.execModules:
                 clb = self.modules[m]['clb']
                 clb(state)

@@ -8,17 +8,22 @@ def register():
     CommandObserver.register('base:create', BaseModule.create)
 
 class BaseModule():
-    # action for configure project before start
-    def prepare(self):
-        pass
-
     @classmethod
     def create(cls, state):
+        if os.path.exists(state.path):
+            # extend error message: use 'add' action or -f for forcing
+            raise Exception('Project folder already exist.')
+
         mode = 0o775
 
         for f in ['/', '/src', '/db', '/doc', '/' + state.conf_dir, '/tests']:
             if os.path.exists(state.path + f): continue
-            os.makedirs(state.path + f, mode)  
+            os.makedirs(state.path + f, mode)
+
+    @classmethod
+    def update(cls, state):
+        # no update. Maybe use update if -f (--force) is present
+        pass
 
     @classmethod
     def open(cls, state):

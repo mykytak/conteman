@@ -1,4 +1,12 @@
-from subprocess import call
+import logging, sys, os
+from subprocess import call, getoutput
+
+sys.path.insert(0, os.path.abspath('../core'))
+from core.Command import CommandObserver
+
+def register():
+  CommandObserver.register('vagrant:create' , Vagrant.create)
+  CommandObserver.register('vagrant:open'   , Vagrant.open)
 
 class Vagrant():
     @classmethod
@@ -17,9 +25,10 @@ class Vagrant():
   config.vm.hostname = "{}.dev"\\n\
   config.landrush.enabled = true\\n\
   config.landrush.tld = ".dev"\\n\
-  config.landrush.guest_redirect_dns = false'''.format(state.projname)
+  config.landrush.guest_redirect_dns = false'''.format(state.name)
 
 
+        # doesn't work again. wtf?
         cmd = '''sed -i '/^{}/{{
        $!{{ N        # append the next line when not on the last line
          s/^{}/{}/
@@ -41,7 +50,10 @@ class Vagrant():
 
         call(cmd, shell=True)
 
+    @staticmethod
     def open(state):
-        output = getoutput("cd {}; vagrant up".format(state.projname), shell=True)
+        logging.debug('Vagrant:open, state %s', state)
 
-        print(output)
+        output = getoutput("cd {}; vagrant up".format(state.path)) #, shell=True
+
+        logging.debug('Vagrant output: %s', output)
