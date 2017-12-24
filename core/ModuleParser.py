@@ -1,12 +1,12 @@
-import os, sys, imp
+import os, sys, imp, yaml
+from functools import reduce
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.Config import Config
-
+from core.Command import CommandObserver
 
 class ModuleParser():
     # parse modules
-    # 
 
     @classmethod
     def parse(cls):
@@ -15,28 +15,31 @@ class ModuleParser():
 
         for m in modules:
 
+            if os.path.isfile(os.path.join(moddir, m)): continue
+
             modpath = os.path.join(moddir, m)
-            is_simple = os.path.isfile( modpath )
+            modinit = os.path.join(modpath, 'init.py' )
 
-            if is_simple:
-                package = imp.load_source(m, modpath)
+            with open(os.path.join(modpath, 'config.yml')) as f:
+                config = yaml.load(f)
+                # add result to Config
 
+                if config is None or 'commands' not in config: continue
 
-                action = getattr(package, 'register', None)
+                package = imp.load_source(m, modinit)
 
-                if callable(action):
-                    action()
-            else:
-                print('You can use only one-file modules right now.')
-                continue
+                for key in config['commands']:
+                    cmd = config['commands'][key]
 
-                modpath = os.path.join(modpath, 'init.py' )
-                # print(modpath, m)
-                # exit()
+                    func = reduce( lambda obj, attr: getattr(obj, attr, None),
+                                    cmd['func'].split('.'),
+                                    package
+                                    )
 
-                package = imp.load_source(m + '/init.py', modpath)
+                    if not callable(func):
+                        raise Exception('Wrong commands field. Command {} function not found'.format(cmd['func']))
 
-                print(package)
+                    CommandObserver.register(cmd['name'], func)
 
 
 # @staticmethod

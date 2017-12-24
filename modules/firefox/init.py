@@ -1,15 +1,7 @@
 import sys, os, logging, argparse
 from subprocess import call, getoutput
 
-sys.path.insert(0, os.path.abspath('../core'))
-from core.Command import CommandObserver
-
 # https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
-
-def register():
-    CommandObserver.register('firefox:create' , Firefox.create)
-    CommandObserver.register('firefox:open'   , Firefox.open)
-    CommandObserver.register('firefox:update' , Firefox.update)
 
 class Firefox():
     @staticmethod

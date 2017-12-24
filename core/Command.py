@@ -14,7 +14,7 @@ class CommandObserver:
             cls.__commands[command] = Command(command)
 
         cmd = cls.__commands[command]
-        cmd.addModule(module, clb, parser)       
+        cmd.addModule(module, clb, parser)
 
     @classmethod
     def list(cls):

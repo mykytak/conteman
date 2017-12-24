@@ -78,7 +78,6 @@ class Config():
                 key = listData[0]
                 value = listData[1]
                 fileDict[key] = value;
-                
 
         fileData.close()
 
