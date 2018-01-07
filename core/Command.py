@@ -14,7 +14,7 @@ class CommandObserver:
             cls.__commands[command] = Command(command)
 
         cmd = cls.__commands[command]
-        cmd.addModule(module, clb, parser)       
+        cmd.addModule(module, clb, parser)
 
     @classmethod
     def list(cls):
@@ -87,7 +87,6 @@ class Command:
         }
 
     def parseArgs(self, inputList):
-
         self.execModules = []
 
         margs = []
@@ -114,6 +113,12 @@ class Command:
             if self.execModules == []: self.execModules = self.modules
 
             for m in self.execModules:
+                # this is bad. I don't remember why execModules was developed
+                # but they must be changed in some way. They filled in Command.parse_args
+                # and also exist in State.parse_args for some reason.
+                # They must be filled in command only!
+                if m not in self.modules: continue
+
                 clb = self.modules[m]['clb']
                 clb(state)
 
@@ -122,9 +127,7 @@ class Command:
             return True
 
         except Exception as e:
-            print('Module {} error: {}'.format(m, e))
-            # need additional info about what's exactly going wrong
-            # traceback.print_stack()
+            print('Module {} error: {};\n{}'.format(m, repr(e), traceback.format_exc()))
             return False
 
         finally:

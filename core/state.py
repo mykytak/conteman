@@ -24,7 +24,7 @@ class State():
             self.globconf = Config.fromYml('~/.conteman/conteman.yml')
 
         if not Config.get('base_dir'):     raise KeyError("you must specify base_dir")
-        if not Config.get('conf_dir'):     raise KeyError("you must specify conf_dir")
+        if not Config.get('config_dir'):   raise KeyError("you must specify config_dir")
         if not Config.get('conteman_dir'): raise KeyError("you must specify conteman_dir")
 
         if args.name:

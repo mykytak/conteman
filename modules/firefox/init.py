@@ -1,15 +1,7 @@
 import sys, os, logging, argparse
 from subprocess import call, getoutput
 
-sys.path.insert(0, os.path.abspath('../core'))
-from core.Command import CommandObserver
-
 # https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
-
-def register():
-    CommandObserver.register('firefox:create' , Firefox.create)
-    CommandObserver.register('firefox:open'   , Firefox.open)
-    CommandObserver.register('firefox:update' , Firefox.update)
 
 class Firefox():
     @staticmethod
@@ -17,7 +9,7 @@ class Firefox():
         mode = 0o775
 
         name = state.firefox.name if state.firefox.name is not None else state.name
-        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.conf_dir
+        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.config_dir
 
         # @todo: check if name already registered as firefox profile.
         cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(name, path + '/firefox/' + state.name)

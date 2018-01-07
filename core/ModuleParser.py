@@ -1,12 +1,12 @@
-import os, sys, imp
+import os, sys, imp, yaml
+from functools import reduce
 
 sys.path.insert(0, os.path.abspath('../core'))
 from core.Config import Config
-
+from core.Command import CommandObserver
 
 class ModuleParser():
     # parse modules
-    # 
 
     @classmethod
     def parse(cls):
@@ -15,28 +15,33 @@ class ModuleParser():
 
         for m in modules:
 
+            if os.path.isfile(os.path.join(moddir, m)): continue
+
             modpath = os.path.join(moddir, m)
-            is_simple = os.path.isfile( modpath )
+            modinit = os.path.join(modpath, 'init.py' )
 
-            if is_simple:
-                package = imp.load_source(m, modpath)
+            if modpath.rfind('__pycache__') >= 0: continue
 
+            with open(os.path.join(modpath, 'config.yml')) as f:
+                config = yaml.load(f)
+                # add result to Config
 
-                action = getattr(package, 'register', None)
+                if config is None or 'commands' not in config: continue
 
-                if callable(action):
-                    action()
-            else:
-                print('You can use only one-file modules right now.')
-                continue
+                package = imp.load_source(m, modinit)
 
-                modpath = os.path.join(modpath, 'init.py' )
-                # print(modpath, m)
-                # exit()
+                for key in config['commands']:
+                    cmd = key['name']
 
-                package = imp.load_source(m + '/init.py', modpath)
+                    func = reduce( lambda obj, attr: getattr(obj, attr, None),
+                                    key['func'].split('.'),
+                                    package
+                                    )
 
-                print(package)
+                    if not callable(func):
+                        raise Exception('Wrong commands field. Command {} function not found'.format(key['func']))
+
+                    CommandObserver.register(key['name'], func)
 
 
 # @staticmethod
