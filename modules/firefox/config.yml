@@ -1,14 +1,8 @@
 commands:
-  - {
-    name: 'firefox:create'
+  - name: 'firefox:create'
     func: 'Firefox.create'
-  }
-  {
-    name: 'firefox:open'
+  - name: 'firefox:open'
     func: 'Firefox.open'
-  }
-  {
-    name: 'firefox.update'
+  - name: 'firefox:update'
     func: 'Firefox.update'
-  }
 

@@ -1,5 +1,4 @@
 commands:
-  create:
-    name: 'base:create'
+  - name: 'base:create'
     func: 'ContemanProjects.create'
 

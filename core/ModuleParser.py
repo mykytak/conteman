@@ -20,6 +20,8 @@ class ModuleParser():
             modpath = os.path.join(moddir, m)
             modinit = os.path.join(modpath, 'init.py' )
 
+            if modpath.rfind('__pycache__') >= 0: continue
+
             with open(os.path.join(modpath, 'config.yml')) as f:
                 config = yaml.load(f)
                 # add result to Config
@@ -29,17 +31,17 @@ class ModuleParser():
                 package = imp.load_source(m, modinit)
 
                 for key in config['commands']:
-                    cmd = config['commands'][key]
+                    cmd = key['name']
 
                     func = reduce( lambda obj, attr: getattr(obj, attr, None),
-                                    cmd['func'].split('.'),
+                                    key['func'].split('.'),
                                     package
                                     )
 
                     if not callable(func):
-                        raise Exception('Wrong commands field. Command {} function not found'.format(cmd['func']))
+                        raise Exception('Wrong commands field. Command {} function not found'.format(key['func']))
 
-                    CommandObserver.register(cmd['name'], func)
+                    CommandObserver.register(key['name'], func)
 
 
 # @staticmethod

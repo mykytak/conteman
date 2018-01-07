@@ -58,7 +58,7 @@ class InteractiveShell():
 
                         _f.seek( temp - 1 )
                         tail = _f.read()
-                        
+
                         f.write(inputStr)
 
                         f.truncate( f.tell() )
@@ -67,7 +67,6 @@ class InteractiveShell():
                         _f.write(tail)
 
                         _f.close()
-                            
 
                     offset = f.tell()
                     line = f.readline()
@@ -75,3 +74,4 @@ class InteractiveShell():
                     #     f.write(line)
 
             f.close()
+

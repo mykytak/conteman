@@ -9,7 +9,7 @@ class Firefox():
         mode = 0o775
 
         name = state.firefox.name if state.firefox.name is not None else state.name
-        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.conf_dir
+        path = state.firefox.path if state.firefox.path is not None else state.path + '/' + state.config_dir
 
         # @todo: check if name already registered as firefox profile.
         cmd = 'firefox -CreateProfile -no-remote "{} {}"'.format(name, path + '/firefox/' + state.name)
